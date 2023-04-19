@@ -2,8 +2,6 @@
 
 <head>
     <script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@v6.1.0/dist/aframe-extras.min.js"></script>
-    <script src="https://unpkg.com/aframe-particle-system-component@1.0.x/dist/aframe-particle-system-component.min.js"></script>
 
     <script src="https://mkwy.fr/js/play-all-model-animations.js"></script><!-- animation -->
     <script src="https://mkwy.fr/js/aframe-orbit-controls.min.js"></script><!-- orbit cam around target -->
@@ -60,33 +58,72 @@
         <a-circle src="#platform" position="0 1 -2" material="opacity: 0.4; color: red" radius="2" rotation="-90 0 0"></a-circle>
 
         <a-sky src="digital_painting_cyber_stage.jpg" rotation="180 90 180"></a-sky>
+        
         <a-entity id='cameraWrapper' position="0 0 0">
-            <a-camera></a-camera>
+            <a-camera id='camera'>
+            </a-camera>
         </a-entity>
+
 
         
 
     </a-scene>
-    <!-- <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            var targetElement = document.getElementById('root');
+    <script>
+        // document.addEventListener('DOMContentLoaded', function () {
+        //     var targetElement = document.getElementById('root');
 
-            // 物体を回転させる
-            var rotate = function (angle) {
-                // 角度が360以上にならないように
-                if (angle == -358) {
-                    angle = 0;
-                } else {
-                    angle -= 0.2;
-                }
-                // 次フレームの準備
-                requestAnimationFrame(rotate.bind(null, angle));
-                // 属性値を変更して回転させる
-                targetElement.setAttribute('rotation', '0 ' + angle + ' 0');
+        //     // 物体を回転させる
+        //     var rotate = function (angle) {
+        //         // 角度が360以上にならないように
+        //         if (angle == -358) {
+        //             angle = 0;
+        //         } else {
+        //             angle -= 0.2;
+        //         }
+        //         // 次フレームの準備
+        //         requestAnimationFrame(rotate.bind(null, angle));
+        //         // 属性値を変更して回転させる
+        //         targetElement.setAttribute('rotation', '0 ' + angle + ' 0');
+        //     }
+        //     rotate(0);
+        // });
+
+        // 基本の距離
+        var cameraElement = document.getElementById('camera');
+        var baseDistance = 0 ;
+
+        // 距離を測る関数
+        function getDistance ( event ) {
+            event.preventDefault() ;
+
+            var touches = event.changedTouches ;
+
+            // 2本以上の指の場合だけ処理
+            if ( touches.length > 1 ) {
+                // 座標1 (1本目の指)
+                var x1 = touches[0].pageX ;
+                var y1 = touches[0].pageY ;
+
+                // 座標2 (2本目の指)
+                var x2 = touches[1].pageX ;
+                var y2 = touches[1].pageY ;
+
+                // 2点間の距離
+                return Math.sqrt( Math.pow( x2-x1, 2 ) + Math.pow( y2-y1, 2 ) ) ;
             }
-            rotate(0);
-        });
-    </script> -->
+
+            return 0 ;
+        }
+
+        // touchmove
+        document.ontouchmove = function ( event ) {
+            // 操作開始時の距離
+            baseDistance = getDistance( event ) ;
+            cameraElement.setAttribute('zoom', baseDistance);
+            console.log(baseDistance);
+        }
+
+    </script>
 </body>
 
 </html>
