@@ -1,0 +1,89 @@
+<html>
+
+<head>
+    <script src="https://aframe.io/releases/0.8.2/aframe.min.js"></script><!-- Master file for aframe (== a-scene) -->
+    <script src="https://mkwy.fr/js/play-all-model-animations.js"></script><!-- animation -->
+    <script src="https://mkwy.fr/js/aframe-orbit-controls.min.js"></script><!-- orbit cam around target -->
+    <script src="https://mkwy.fr/js/aframe-extras.js"></script><!-- cub-env-map -->
+    
+    <script src="https://unpkg.com/aframe-particle-system-component@1.0.x/dist/aframe-particle-system-component.min.js"></script>
+</head>
+
+<body>
+    <a-scene embedded arjs="debugUIEnabled:false;" renderer="gammaOutput: true;" vr-mode-ui="enabled: false">
+        <a-light type="point" intensity="0.3" position="0 5 5"></a-light>
+        <a-entity light="type: ambient; color: #ffffff; intensity: 1.0" position="-1 1 0"></a-entity>
+
+        <a-shadow-light
+            id="spot-light-primitive"
+            type="spot"
+            mapsize="2048 2048"
+            far="20">
+        </a-shadow-light>
+        <a-entity
+            id="directional-light-entity"
+            shadow-light="type: directional; intensity: 0.8; helper: true">
+        </a-entity>
+        <a-shadow-plane
+            id="shadow-plane-primitive
+            dimensions="20 20">
+        </a-shadow-plane>
+        <a-entity
+            id="shadow-plane-entity"
+            shadow-plane="opacity: 0.4">
+        </a-entity>
+
+        <a-assets>
+            <a-asset-item id="mezamasikun" src="mezamasi_anim.gltf"></a-asset-item>
+            <a-asset-item id="stage" src="stage.gltf"></a-asset-item>
+            <audio id="audio" src="bell.mp3"></audio>
+        </a-assets>
+
+        <a-entity position="0 2.25 -15" particle-system="preset: dust; particleCount: 10000"></a-entity>
+
+        <a-entity id="root">
+            <a-entity gltf-model="#mezamasikun" 
+                position="0 1 -2" 
+                scale="10.0 10.0 10.0" 
+                animation-mixer 
+                reflections="type: realtime" 
+                cube-env-map="path: cubemap/; extension: jpg; reflectivity: 0.1;"
+                shadow>
+            </a-entity>
+
+        </a-entity>
+        <!-- Right Side/Back-to-front -->
+        <!-- Transparent -->
+        <a-circle src="#platform" position="0 1 -2" material="opacity: 0.4; color: red" radius="2" rotation="-90 0 0"></a-circle>
+
+        <a-sky src="digital_painting_cyber_stage.jpg" rotation="180 90 180"></a-sky>
+        <a-entity id='cameraWrapper' position="0 0 0">
+            <a-camera></a-camera>
+        </a-entity>
+
+        
+
+    </a-scene>
+    <!-- <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var targetElement = document.getElementById('root');
+
+            // 物体を回転させる
+            var rotate = function (angle) {
+                // 角度が360以上にならないように
+                if (angle == -358) {
+                    angle = 0;
+                } else {
+                    angle -= 0.2;
+                }
+                // 次フレームの準備
+                requestAnimationFrame(rotate.bind(null, angle));
+                // 属性値を変更して回転させる
+                targetElement.setAttribute('rotation', '0 ' + angle + ' 0');
+            }
+            rotate(0);
+        });
+    </script> -->
+</body>
+
+</html>
