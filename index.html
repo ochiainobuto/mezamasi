@@ -11,6 +11,8 @@
 </head>
 
 <body>
+    <div id="div0"></div>
+
     <a-scene embedded arjs="debugUIEnabled:false;" renderer="gammaOutput: true;" vr-mode-ui="enabled: false">
         <a-light type="point" intensity="0.3" position="0 5 5"></a-light>
         <a-entity light="type: ambient; color: #ffffff; intensity: 1.0" position="-1 1 0"></a-entity>
@@ -36,6 +38,7 @@
 
         <a-assets>
             <a-asset-item id="mezamasikun" src="mezamasi_anim.gltf"></a-asset-item>
+            <a-asset-item id="cupnoodle" src="cupnoodle.gltf"></a-asset-item>
             <!-- <a-asset-item id="stage" src="stage.gltf"></a-asset-item>
             <audio id="audio" src="bell.mp3"></audio> -->
         </a-assets>
@@ -44,15 +47,35 @@
 
         <a-entity id="root">
             <a-entity gltf-model="#mezamasikun" 
-                position="0 1 -2" 
+                position="0.5 1 -2" 
                 scale="10.0 10.0 10.0" 
+                rotation="0 -20 0 "
                 animation-mixer 
                 reflections="type: realtime" 
                 cube-env-map="path: cubemap/; extension: jpg; reflectivity: 0.1;"
                 shadow>
             </a-entity>
 
-        </a-entity>
+            <a-entity gltf-model="#cupnoodle" 
+                position="-0.5 2 -2" 
+                rotation="0 20 0 "
+                scale="0.2 0.16 0.2" 
+                animation-mixer 
+                reflections="type: realtime" 
+                cube-env-map="path: cubemap/; extension: jpg; reflectivity: 0.1;"
+                shadow>
+            </a-entity>
+
+            <a-text id="timer"
+                value="00:00" 
+                scale="2 2 2" 
+                position="0 2.5 -2">
+            </a-text>
+            <!-- <a-box 
+            position="-1 1.6 -5" 
+            animation="property: position; to: 1 8 -10; dur: 2000; easing: linear; loop: true" 
+            color="tomato"></a-box> -->
+
         <!-- Right Side/Back-to-front -->
         <!-- Transparent -->
         <a-circle src="#platform" position="0 1 -2" material="opacity: 0.4; color: red" radius="2" rotation="-90 0 0"></a-circle>
@@ -64,11 +87,11 @@
             </a-camera>
         </a-entity>
 
-
-        
-
     </a-scene>
     <script>
+        var doc0= document.getElementById("div0");  
+        //doc0.innerHTML= "div0の箇所にテキストを表示します。";   
+    
         // document.addEventListener('DOMContentLoaded', function () {
         //     var targetElement = document.getElementById('root');
 
@@ -87,10 +110,60 @@
         //     }
         //     rotate(0);
         // });
+        
+        var timerElement = document.getElementById('timer');
+
+        // let countdown = setInterval(function(){
+        //     console.log("start");
+        //     const now = new Date()  //今の日時
+        //     //const target = new Date(now.getFullYear(), now.getMonth() + 1, 0,'23','59','59') //ターゲット日時を取得
+        //     const target = new Date(now.getFullYear(), now.getMonth() + 1, 0,'00','03','00') //ターゲット日時を取得
+        //     const remainTime = target - now  //差分を取る（ミリ秒で返ってくる
+
+        //     //指定の日時を過ぎていたら処理をしない
+        //     if(remainTime < 0) return false 
+
+        //     //秒を取得
+        //     const calcSec  = Math.floor(remainTime / 1000) % 60;
+        //     const calcMin = Math.floor(remainTime / 1000 / 60) % 60;
+
+        //     const _calcSec = calcSec < 10 ? '0' + calcSec : calcSec;
+        //     const _calcMin = calcMin < 10 ? '0' + calcMin : calcMin;
+
+        //     timerElement.setAttribute('value', _calcMin + ":" + _calcSec);
+        //     console.log(calcSec);
+
+        //     //指定の日時になればカウントを止める
+        //     if(remainTime < 0) clearInterval(countdown)
+
+        // }, 1000)    //1秒間に1度処理
+
+        var count = 180; //カウントの初期値
+        timerID = setInterval('countup()',1000); //1秒毎にcountup()を呼び出し
+
+        function countup() {
+            count = count - 1;
+
+            //秒を取得
+            const calcSec  = Math.floor(count) % 60;
+            const calcMin = Math.floor(count / 60) % 60;
+
+            const _calcSec = calcSec < 10 ? '0' + calcSec : calcSec;
+            const _calcMin = calcMin < 10 ? '0' + calcMin : calcMin;
+
+            timerElement.setAttribute('value', _calcMin + ":" + _calcSec);
+            console.log(calcSec);
+
+            
+            if(count < 0) clearInterval(countup)
+        }
+
 
         // 基本の距離
         var cameraElement = document.getElementById('camera');
         var baseDistance = 0 ;
+        console.log(cameraElement);
+        console.log(cameraElement);
 
         // 距離を測る関数
         function getDistance ( event ) {
@@ -121,6 +194,7 @@
             baseDistance = getDistance( event ) ;
             cameraElement.setAttribute('zoom', baseDistance);
             console.log(baseDistance);
+            doc0.innerHTML= baseDistance;
         }
 
     </script>
