@@ -37,7 +37,7 @@
         </a-entity>
 
         <a-assets>
-            <a-asset-item id="mezamasikun" src="mezamasi_anim.gltf"></a-asset-item>
+            <a-asset-item id="mezamasikun" src="mezamasi_anim.glb"></a-asset-item>
             <a-asset-item id="cupnoodle" src="cupnoodle.gltf"></a-asset-item>
             <!-- <a-asset-item id="stage" src="stage.gltf"></a-asset-item>
             <audio id="audio" src="bell.mp3"></audio> -->
@@ -46,11 +46,14 @@
         <a-entity position="0 2.25 -15" particle-system="preset: dust; particleCount: 10000"></a-entity>
 
         <a-entity id="root">
-            <a-entity gltf-model="#mezamasikun" 
+            <a-entity 
+                motion
+                id="model"
+                gltf-model="#mezamasikun" 
                 position="0.5 1 -2" 
                 scale="10.0 10.0 10.0" 
                 rotation="0 -20 0 "
-                animation-mixer 
+                animation-mixer="clip: idle; loop: repeat"
                 reflections="type: realtime" 
                 cube-env-map="path: cubemap/; extension: jpg; reflectivity: 0.1;"
                 shadow>
@@ -89,55 +92,8 @@
 
     </a-scene>
     <script>
-        var doc0= document.getElementById("div0");  
-        //doc0.innerHTML= "div0の箇所にテキストを表示します。";   
-    
-        // document.addEventListener('DOMContentLoaded', function () {
-        //     var targetElement = document.getElementById('root');
-
-        //     // 物体を回転させる
-        //     var rotate = function (angle) {
-        //         // 角度が360以上にならないように
-        //         if (angle == -358) {
-        //             angle = 0;
-        //         } else {
-        //             angle -= 0.2;
-        //         }
-        //         // 次フレームの準備
-        //         requestAnimationFrame(rotate.bind(null, angle));
-        //         // 属性値を変更して回転させる
-        //         targetElement.setAttribute('rotation', '0 ' + angle + ' 0');
-        //     }
-        //     rotate(0);
-        // });
-        
+        //Countdown
         var timerElement = document.getElementById('timer');
-
-        // let countdown = setInterval(function(){
-        //     console.log("start");
-        //     const now = new Date()  //今の日時
-        //     //const target = new Date(now.getFullYear(), now.getMonth() + 1, 0,'23','59','59') //ターゲット日時を取得
-        //     const target = new Date(now.getFullYear(), now.getMonth() + 1, 0,'00','03','00') //ターゲット日時を取得
-        //     const remainTime = target - now  //差分を取る（ミリ秒で返ってくる
-
-        //     //指定の日時を過ぎていたら処理をしない
-        //     if(remainTime < 0) return false 
-
-        //     //秒を取得
-        //     const calcSec  = Math.floor(remainTime / 1000) % 60;
-        //     const calcMin = Math.floor(remainTime / 1000 / 60) % 60;
-
-        //     const _calcSec = calcSec < 10 ? '0' + calcSec : calcSec;
-        //     const _calcMin = calcMin < 10 ? '0' + calcMin : calcMin;
-
-        //     timerElement.setAttribute('value', _calcMin + ":" + _calcSec);
-        //     console.log(calcSec);
-
-        //     //指定の日時になればカウントを止める
-        //     if(remainTime < 0) clearInterval(countdown)
-
-        // }, 1000)    //1秒間に1度処理
-
         var count = 180; //カウントの初期値
         timerID = setInterval('countup()',1000); //1秒毎にcountup()を呼び出し
 
@@ -155,9 +111,13 @@
             console.log(calcSec);
 
             
-            if(count < 0) clearInterval(countup)
+            if(count < 1) clearInterval(timerID)
         }
 
+        //Pinch out
+        var doc0= document.getElementById("div0");  
+        
+        //doc0.innerHTML= "div0の箇所にテキストを表示します。"; 
 
         // 基本の距離
         // var cameraElement = document.getElementById('camera');
@@ -195,6 +155,77 @@
         //     console.log(baseDistance);
         //     doc0.innerHTML= baseDistance;
         // }
+
+        // document.addEventListener('click', () => {
+        // alert('ボタンがクリックされました！');
+        // });
+        document.addEventListener("click", function(e){
+            // 端末のデフォルト動作をキャンセル
+            e.preventDefault();
+
+            // タッチ中の位置を取得
+            // const x = e.changedTouches[0].pageX;
+            // const y = e.changedTouches[0].pageY;
+            const x = e.pageX;
+            const y = e.pageY;
+
+            doc0.innerHTML= x + " : " + y;
+        });
+
+
+        const model = document.getElementById('model');
+
+        document.addEventListener('click', function () {
+            //alert('Jump');
+            
+            model.removeAttribute('animation-mixer', onAnimationWalk);
+            onAnimationJump();
+            model.addEventListener('animation-loop', onAnimationWalk)
+            // model.removeEventListener('animation-finished', onAnimationJump)
+
+            model.removeAttribute('animation', onAnimationRot);
+            onAnimationRot();
+            model.addEventListener('animationend', onAnimationRot);
+
+        });
+
+        function onAnimationRot() {
+            console.log("rot");
+
+            let x = Math.random() * 0;
+            let y = Math.random() * 360;
+            let z = Math.random() * 0;
+            console.log(y);
+
+            model.setAttribute('animation', {
+                property: 'rotation',
+                to: `${x} ${y} ${z}`,
+                dur: 700,
+                easing: 'easeInOutQuad',
+                loop: 1
+            });
+        }
+
+        function onAnimationJump() {
+            console.log("jump");
+            model.setAttribute('animation-mixer', {
+                clip: 'jump',
+                loop: 1,
+                crossFadeDuration: 0.1,
+
+            })
+        }
+
+        function onAnimationWalk() {
+            console.log("walk");
+
+            
+            model.setAttribute('animation-mixer', {
+                clip: 'walk',
+                loop: 'repeat',
+                crossFadeDuration: 0.1,
+            })
+        }
 
     </script>
 </body>
