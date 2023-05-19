@@ -1,36 +1,91 @@
 <html>
 
 <head>
-    <script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
-    <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>webcam/mobilecam 
-    <script src="https://mkwy.fr/js/play-all-model-animations.js"></script><!-- animation -->
-    <script src="https://mkwy.fr/js/aframe-orbit-controls.min.js"></script><!-- orbit cam around target -->
-    <script src="https://mkwy.fr/js/aframe-extras.js"></script><!-- cub-env-map -->
-    <!-- <script src="https://unpkg.com/aframe-particle-system-component@1.0.x/dist/aframe-particle-system-component.min.js"></script> -->
+    <!-- https://aframe.io/docs/1.4.0/primitives/a-sound.html -->
+    <script src="https://aframe.io/releases/1.4.1/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/c-frame/aframe-particle-system-component@1.1.4/dist/aframe-particle-system-component.min.js"></script>
+    <!-- https://github.com/c-frame/aframe-extras -->
+    <script src="https://cdn.jsdelivr.net/gh/c-frame/aframe-extras@7.0.0/dist/aframe-extras.min.js"></script>
+    
+    <!-- webcam/mobilecam -->
+    <!-- <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script> -->
 
 </head>
 
+<style>
+    body {
+    font-family: sans-serif;
+    }
+
+    #btn {
+        position: absolute;
+        bottom: 50px;
+        left: 50%;
+        transform: translateX(-50%);
+
+        z-index: 1;
+        cursor: pointer;
+        background: transparent;
+
+        border: none;
+        width: 70vw;
+        height: 10vh;
+        background-repeat: no-repeat;
+        background-size: contain;
+        pointer-events: auto;
+        visibility: hidden;
+    }
+
+    #start_btn {
+        position: absolute;
+        bottom: 50%;
+        left: 50%;
+        transform: translateX(-50%);
+
+        z-index: 1;
+        cursor: pointer;
+        background: transparent;
+
+        border: none;
+        width: 70vw;
+        height: 10vh;
+        background-repeat: no-repeat;
+        background-size: contain;
+        pointer-events: auto;
+    }
+
+</style>
+
 <body>
-    <div id="div0"></div>
+    <button id="btn">
+        <img src="start.png" alt="">
+    </button>
+    <button id="start_btn">
+        <img src="tv_tap.png" alt="">
+    </button>
+    
+    <a-scene renderer="colorManagement: true;" vr-mode-ui="enabled: false" reflection="directionalLight:a-light#dirlight;">
+        <a-light id="dirlight" intensity="1" position="1 1 1"></a-light>
+        <a-entity light="type: ambient; color: #ffffff; intensity: 0.1" position="0 0 0"></a-entity>
 
-    <a-scene embedded arjs="debugUIEnabled:false;" renderer="gammaOutput: true;" vr-mode-ui="enabled: false">
-        <a-light type="point" intensity="0.3" position="0 5 5"></a-light>
-        <a-entity light="type: ambient; color: #ffffff; intensity: 1.0" position="-1 1 0"></a-entity>
-
-        <a-shadow-light
-            id="spot-light-primitive"
-            type="spot"
-            mapsize="2048 2048"
-            far="20">
-        </a-shadow-light>
-        <a-entity
-            id="directional-light-entity"
-            shadow-light="type: directional; intensity: 0.8; helper: true">
+        <!-- Partivcles -->
+        <a-entity id="particleEmitter" 
+        rotation="0 90 0" 
+        position="0 0.5 -3" 
+        particle-system="preset:star; 
+                        color: yellow; 
+                        maxAge: 0.5;
+                        accelerationValue: 0 -1 0; 
+                        accelerationSpread: 0 0 0; 
+                        velocityValue: 0 1 0; 
+                        velocitySpread: 3 3 3; 
+                        randomise: true;
+                        dragValue: 0.2; 
+                        duration: 0.03; 
+                        enabled: false;
+                        size: 2;
+                        particleCount: 8;">
         </a-entity>
-        <a-shadow-plane
-            id="shadow-plane-primitive
-            dimensions="20 20">
-        </a-shadow-plane>
 
         <a-entity
             id="shadow-plane-entity"
@@ -39,28 +94,30 @@
 
         <a-assets>
             <a-asset-item id="mezamasikun" src="mezamasi_anim2.glb"></a-asset-item>
-            <!-- <a-asset-item id="cupnoodle" src="cupnoodle.gltf"></a-asset-item> -->
-            <!-- <a-asset-item id="stage" src="stage.gltf"></a-asset-item> -->
             <audio id="bell" src="bell.mp3"></audio>
+            <audio id="result" src="Result_01.wav"></audio>
+            <audio id="alerm" src="pixta_64136226_01.mp3"></audio>
+            <audio id="hit" src="Jingle 07.wav"></audio>
+            <audio id="dropin" src="FinalBattleActionV2.wav"></audio>
         </a-assets>
-
-        <!-- <a-entity position="0 2.25 -15" particle-system="preset: dust; particleCount: 10000"></a-entity> -->
 
         <a-entity id="root">
             <a-entity 
                 id="model"
+                visible="false"
                 gltf-model="#mezamasikun" 
-                position="0 0 -3" 
+                position="0 0 -1" 
                 scale="10.0 10.0 10.0" 
                 rotation="0 0 0"
-                animation-mixer="clip: run; loop: repeat timeScale: 1.0"
+                animation-mixer="clip: idle; loop: repeat timeScale: 1.0"
                 reflections="type: realtime" 
-                cube-env-map="path: cubemap/; extension: jpg; reflectivity: 0.1;"
-                shadow>
+                cube-env-map="path: cubemap/; extension: jpg; reflectivity: 0.1;">
+
+                <!-- <a-sound id="alerm" src="src: url(pixta_64136226_01.mp3)" autoplay="false" loop="true" position="0 0 0"></a-sound> -->
 
                 <!-- 当たり判定オブジェクト -->
                 <a-entity hit-box>
-                    <a-entity hitbox class="raycastable" geometry="primitive:cylinder" material="color:blue; opacity: 0.0" scale="0.05 0.1 0.05" position="0 0.05 0" visible="true"></a-entity>
+                    <a-entity hitbox class="raycastable" geometry="primitive:cylinder" material="color:blue; opacity: 0.0" scale="0.05 0.1 0.05" position="0 0.05 0" visible="false"></a-entity>
                 </a-entity>
                 
             </a-entity>
@@ -69,28 +126,30 @@
                 align="center"
                 value="00:00" 
                 scale="2 2 2" 
-                position="0 1.5 -3">
+                color="rgba(0, 0, 255)"
+                width="10"
+                position="0 2 -3">
             </a-text>
 
         <!-- Camera -->
-        <a-entity id='cameraWrapper' position="0 -0.5 0">
+        <a-entity id='cameraWrapper' position="0 -1 3">
             <a-camera></a-camera>
         </a-entity>
 
         <!-- マウスカーソル -->
         <a-entity id="mouseCursor" cursor="rayOrigin: mouse" raycaster="objects: .raycastable"></a-entity>
-            
-
+        
+        <a-entity updater></a-entity>
         
     </a-scene>
     <script>
         //Countdown
         var timerElement = document.getElementById('timer');
-        var count = 180; //カウントの初期値
-        timerID = setInterval('countup()',1000); //1秒毎にcountup()を呼び出し
+        var count = 0; //カウントの初期値
+        timerID = setInterval('countup()',100); //1秒毎にcountup()を呼び出し
 
         function countup() {
-            count = count - 1;
+            count = count + 1;
 
             //秒を取得
             const calcSec  = Math.floor(count) % 60;
@@ -100,36 +159,16 @@
             const _calcMin = calcMin < 10 ? '0' + calcMin : calcMin;
 
             timerElement.setAttribute('value', _calcMin + ":" + _calcSec);
-            //console.log(calcSec);
-
-            if(count < 1) clearInterval(timerID)
+            // if(count < 1) clearInterval(timerID)
         }
 
 
-        var doc0= document.getElementById("div0");  
         const model = document.getElementById('model');
-
-        //Click Event
-        document.addEventListener('click', function (e) {
-            //Position
-            e.preventDefault();
-            const x = e.pageX;
-            const y = e.pageY;
-
-            doc0.innerHTML= x + " : " + y;
-
-        });
-
         function onAnimationRot() {
-            console.log("hit" + model.object3D.rotation.y);
-            console.log("Math.PI" + Math.PI * 8);
-            
             let x = model.object3D.rotation.x;
             let y = model.object3D.rotation.y;
             let z = model.object3D.rotation.z;
 
-            console.log("to" + y);
-            
             model.setAttribute('animation', {
                 property: 'rotation',
                 to: `${x} ${y+ Math.PI * 12} ${z}`,
@@ -139,23 +178,111 @@
             });
         }
 
+        function onAnimationResetPos() {
+            console.log("ResetPos");
+            model.setAttribute('animation', {
+                property: 'position',
+                to: `0 0 -1`,
+                dur: 600,
+                easing: 'easeInOutQuad',
+                loop: 1
+            });
+        }
+        function onAnimationResetRot() {
+            console.log("ResetRot");
+            model.setAttribute('animation', {
+                property: 'rotation',
+                to: `0 0 0`,
+                dur: 600,
+                easing: 'easeInOutQuad',
+                loop: 1
+            });
+        }
+
+        function onAnimationDropin() {
+            console.log("Dropin");
+
+            model.setAttribute('animation-mixer', {
+                clip: 'dropin',
+                loop: '1',
+                crossFadeDuration: 0.0,
+            });
+            model.setAttribute('visible', 'true');
+        }
+
+        function onAnimationTalk() {
+            console.log("talk");
+
+            model.setAttribute('animation-mixer', {
+                clip: 'talk',
+                loop: 'repeat',
+                crossFadeDuration: 0.0,
+            })
+
+        }
+
+        function onAnimationIdle() {
+            console.log("idle");
+
+            model.setAttribute('animation-mixer', {
+                clip: 'idle',
+                loop: 'repeat',
+                crossFadeDuration: 0.0,
+            })
+        }
+
+        function onAnimationIdle2() {
+            console.log("idle2");
+            alerm_audio.pause();
+
+            model.setAttribute('animation-mixer', {
+                clip: 'idle',
+                loop: 'repeat',
+                crossFadeDuration: 0.0,
+            })
+
+        }
+
+        function onAnimationNade() {
+            console.log("talk");
+
+            model.setAttribute('animation-mixer', {
+                clip: 'nade',
+                loop: 'repeat',
+                crossFadeDuration: 0.0,
+            })
+
+        }
+
+        var alerm_audio = document.querySelector('#alerm');
+
         function onAnimationJump() {
             console.log("jump");
             model.setAttribute('animation-mixer', {
                 clip: 'jump',
                 loop: 1,
-                crossFadeDuration: 0.02,
+                crossFadeDuration: 0.0,
             })
+
+            var bell_audio = document.querySelector('#bell');
+            bell_audio.currentTime = 0;
+            bell_audio.play();
+
+            alerm_audio.pause();
         }
 
+        
         function onAnimationRun() {
             console.log("Run");
 
             model.setAttribute('animation-mixer', {
                 clip: 'run',
                 loop: 'repeat',
-                crossFadeDuration: 0.1,
+                crossFadeDuration: 0.0,
             })
+
+            alerm_audio.play();
+
         }
 
         var rotationSpeed = 10.0;
@@ -164,12 +291,13 @@
         var goal = new THREE.Vector3();
         var direction = new THREE.Vector3();
         var currentRotation = new THREE.Euler();
-
+        
+        
         // ゴールをランダムな位置に設定する関数
         function setRandomGoal() {
             goal.x = Math.random() * 10 - 5;
             goal.y = 0;
-            goal.z = Math.random() * 4 - 2 - 2;
+            goal.z = Math.random() * 6 - 4;
 
         }
 
@@ -183,48 +311,173 @@
         //Update
         function updateScreen(time) {
             // console.log("update");
-            direction.subVectors(model.object3D.position, goal).normalize();
-
-            // オブジェクトをゴールの方向に向ける
-            var targetRotation = Math.atan2(-direction.x, -direction.z);
-            var deltaRotation = targetRotation - currentRotation.y;
-
-            // 回転を制限するために、deltaRotationを -π から π の範囲に制限する
-            deltaRotation = ((deltaRotation + Math.PI) % (2 * Math.PI)) - Math.PI;
-
-            // 回転を徐々に適用する
-            currentRotation.y += deltaRotation * rotationSpeed / 400;
-
-            // 回転を反映する
-            model.object3D.rotation.set(currentRotation.x, currentRotation.y, currentRotation.z);
-            // console.log("currentRotation: " + currentRotation);
-
-            //get model vector
-            var vector = new THREE.Vector3();
-            model.object3D.getWorldDirection(vector);
-            vector.multiplyScalar(0.03);
-            model.object3D.position.add(vector);
-
 
         }
 
+        // スタート関数
+        function setStart() {
+            var dropin_audio = document.querySelector('#dropin');
+            dropin_audio.currentTime = 0;
+            dropin_audio.play();
+            onAnimationDropin();
+            model.addEventListener('animation-loop', onAnimationIdle);
+        }
+
+
+        // var alerm_audio = document.querySelector('#alerm');
+
+        // var entity = document.querySelector('#alerm');
+        // entity.components.sound.playSound();
+
+        let state;
+        let num;
+        let limit;
+
+        AFRAME.registerComponent('updater', {
+            init: function()
+            {
+                state = 0;
+                num = 0;
+                limit = 3;
+
+                
+
+                //Strat button
+                const start_btn = document.getElementById('start_btn')
+                const startClick = () => {
+                    console.log('start')
+                    state = 2;
+
+                    setStart();
+                    document.getElementById('start_btn').style.visibility = 'hidden'
+                    document.getElementById('btn').style.visibility = 'visible'
+                    }
+                start_btn.addEventListener('click', startClick, {once: true});
+
+
+                //jump button
+                const btn = document.getElementById('btn')
+                const jumpClick = () => {
+                    console.log('click')
+                    state = 3;
+
+                    
+                    document.getElementById('btn').style.visibility = 'hidden'
+                    onAnimationJump();
+                    model.addEventListener('animation-loop', onAnimationRun)
+                    
+                    }
+                btn.addEventListener('click', jumpClick);
+
+            },
+            tick: function (time, timeDelta) 
+            {
+                this.num += 1;
+                //console.log( this.num );
+
+                if(state == 3){
+                    direction.subVectors(model.object3D.position, goal).normalize();
+
+                    // オブジェクトをゴールの方向に向ける
+                    var targetRotation = Math.atan2(-direction.x, -direction.z);
+                    var deltaRotation = targetRotation - currentRotation.y;
+
+                    // 回転を制限するために、deltaRotationを -π から π の範囲に制限する
+                    deltaRotation = ((deltaRotation + Math.PI) % (2 * Math.PI)) - Math.PI;
+
+                    // 回転を徐々に適用する
+                    currentRotation.y += deltaRotation * rotationSpeed / 400;
+
+                    // 回転を反映する
+                    model.object3D.rotation.set(currentRotation.x, currentRotation.y, currentRotation.z);
+
+                    //get model vector
+                    var vector = new THREE.Vector3();
+                    model.object3D.getWorldDirection(vector);
+                    vector.multiplyScalar(0.03);
+                    model.object3D.position.add(vector);
+                }
+            }
+        });
+
         //Hit
+        var particleEmitter = document.getElementById('particleEmitter');
+
         AFRAME.registerComponent('hit-box', {
             init:function(){
                 this.el.addEventListener('click', ()=>{
 
-                    var audio = document.querySelector('#bell');
-                    audio.play();
+                    //game wait
+                    if(state == 2){
+                        // var audio = document.querySelector('#hit');
+                        // audio.currentTime = 0;
+                        // audio.play();
 
-                    model.removeAttribute('animation-mixer', onAnimationRun);
-                    model.removeAttribute('animation-mixer', onAnimationJump);
-                    onAnimationJump();
-                    model.addEventListener('animation-loop', onAnimationRun)
-                    // model.removeEventListener('animation-finished', onAnimationJump)
+                        model.removeAttribute('animation-mixer', onAnimationIdle);
+                        model.removeAttribute('animation-mixer', onAnimationNade);
+                        onAnimationNade();
+                        model.addEventListener('animation-finished', onAnimationIdle)
 
-                    model.removeAttribute('animation', onAnimationRot);
-                    onAnimationRot();
-                    model.addEventListener('animationend', onAnimationRot);
+                        // var pos = new THREE.Vector3();
+                        // model.object3D.getWorldPosition(pos);
+
+                        // particleEmitter.setAttribute('position', pos); 
+                        // particleEmitter.components['particle-system'].stopParticles();
+                        // particleEmitter.components['particle-system'].startParticles();
+                    }
+
+                    //game play
+                    if(state == 3){
+                        console.log(num);
+
+                        var pos = new THREE.Vector3();
+                        model.object3D.getWorldPosition(pos);
+
+                        particleEmitter.setAttribute('position', pos); 
+                        particleEmitter.components['particle-system'].stopParticles();
+                        particleEmitter.components['particle-system'].startParticles();
+
+                        var audio = document.querySelector('#hit');
+                        audio.currentTime = 0;
+                        audio.play();
+
+                        
+
+                        model.removeAttribute('animation', onAnimationRot);
+                        onAnimationRot();
+
+                        
+                        num = num + 1;
+                        if(num == limit){
+                            console.log("Stoppppppp");
+                            state = 4;
+                            
+                            clearInterval(timerID);
+
+                            var result_audio = document.querySelector('#result');
+                            result_audio.currentTime = 0;
+                            result_audio.play();
+                            
+                            
+                            onAnimationJump();
+                            model.addEventListener('animation-loop', onAnimationIdle2);
+
+                            model.removeAttribute('animation', onAnimationRot);
+                            onAnimationResetPos();
+                            onAnimationResetRot();
+
+                        }
+                        else{
+                            onAnimationJump();
+                        }
+                        
+                    }
+
+                    //game result
+                    if(state == 4){
+
+
+                    }
 
                 });
             }
