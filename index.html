@@ -8,7 +8,8 @@
     <script src="https://cdn.jsdelivr.net/gh/c-frame/aframe-extras@7.0.0/dist/aframe-extras.min.js"></script>
     
     <!-- https://github.com/AR-js-org/AR.js/ -->
-    <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
+    <!-- <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script> -->
+    <!-- <script src="https://raw.githack.com/AR-js-org/AR.js/3.4.5/aframe/build/aframe-ar-nft.js"></script>  -->
 
 </head>
 
@@ -17,7 +18,24 @@
     font-family: sans-serif;
     }
 
-    #btn {
+    .center {
+        position: absolute;
+        bottom: 50%;
+        left: 50%;
+        transform: translateX(-120px);
+        margin:auto;
+        z-index: 1;
+        cursor: pointer;
+        background: transparent;
+
+        border: none;
+
+        background-repeat: no-repeat;
+        background-size: contain;
+        pointer-events: auto;
+    }
+
+    .under {
         position: absolute;
         bottom: 50px;
         left: 50%;
@@ -35,38 +53,34 @@
         visibility: hidden;
     }
 
-    #start_btn {
-        position: absolute;
-        bottom: 50%;
-        left: 50%;
-        transform: translateX(-120px);
-        margin:auto;
-
-
-        z-index: 1;
-        cursor: pointer;
-        background: transparent;
-
-        border: none;
-
-        background-repeat: no-repeat;
-        background-size: contain;
-        pointer-events: auto;
-    }
-
 </style>
 
 <body>
-    <button id="btn">
-        <img src="start.png" alt="">
-    </button>
-    <button id="start_btn">
+    
+    <button id="setup_btn" class="center">
         <img src="tv_tap.png" alt="">
     </button>
-    
-    <a-scene  vr-mode-ui="enabled: false" reflection="directionalLight:a-light#dirlight;" arjs="sourceType: webcam; videoTexture: true; debugUIEnabled: false;">
-        <a-light id="dirlight" intensity="0.3" position="1 1 1"></a-light>
-        <a-entity light="type: ambient; color: #ffffff; intensity: 0.5" position="0 0 0"></a-entity>
+    <button id="start_btn" class="under">
+        <img src="start.png" alt="">
+    </button>
+    <button id="again_btn" class="under">
+        <img src="again.png" alt="">
+    </button>
+
+    <a-scene
+        vr-mode-ui="enabled: false;"
+        embedded
+        arjs="trackingMethod: best; sourceType: webcam;debugUIEnabled: false;"
+        renderer="antialias: true;
+                    logarithmicDepthBuffer: true;
+                    precision: medium;
+                    sortObjects: true;
+                    toneMapping: ACESFilmic;
+                    exposure: 1.6;
+                    physicallyCorrectLights: false;">
+
+        <a-light id="dirlight" intensity="1.8" position="1 2 1"></a-light>
+        <a-entity light="type: ambient; color: #ffffff; intensity: 0.0" position="0 0 0"></a-entity>
 
         <!-- Partivcles -->
         <a-entity id="particleEmitter" 
@@ -83,22 +97,24 @@
                         dragValue: 0.2; 
                         duration: 0.03; 
                         enabled: false;
-                        size: 2;
+                        size: 1.0;
                         particleCount: 8;">
         </a-entity>
 
-        <a-entity
+        <!-- <a-entity
             id="shadow-plane-entity"
             shadow-plane="opacity: 0.4">
-        </a-entity>
+        </a-entity> -->
 
         <a-assets>
-            <a-asset-item id="mezamasikun" src="mezamasi_anim2.glb"></a-asset-item>
+            <a-asset-item id="mezamasikun" src="mezamasi_anim3.glb"></a-asset-item>
             <audio id="bell" preload="auto" src="bell.mp3"></audio>
-            <audio id="result" preload="auto" src="Result_01.mp3"></audio>
-            <audio id="alerm" preload="auto" src="pixta_64136226_01.mp3"></audio>
-            <audio id="hit" preload="auto" src="Jingle 07.mp3"></audio>
+            <audio id="result" preload="auto" src="Result_01.mp3" volume="100"></audio>
+            <!-- <audio id="alerm" preload="auto" src="pixta_64136226_01.mp3"></audio> -->
+            <audio id="hit" preload="auto" src="Jingle_07.mp3"></audio>
             <audio id="dropin" preload="auto" src="FinalBattleActionV2.mp3"></audio>
+            <audio id="nadeVoice" preload="auto" src="voice_female_a_expression_emote_03.mp3"></audio>
+            <audio id="jumpVoice" preload="auto" src="voice_female_a_expression_emote_05.mp3"></audio>
         </a-assets>
 
         <a-entity id="root">
@@ -110,13 +126,18 @@
                 scale="10.0 10.0 10.0" 
                 rotation="0 0 0"
                 animation-mixer="clip: idle; loop: repeat timeScale: 1.0"
-                reflections="type: realtime" 
-                cube-env-map="path: cubemap/; extension: jpg; reflectivity: 0.1;">
+                cube-env-map="path: cubemap/; extension: jpg; reflectivity: 0.1";
+                reflections="type: realtime"
+                >
+                <!-- cube-env-map="path: cubemap/; extension: jpg; reflectivity: 0.1;" -->
+                <!-- reflections="type: realtime"  -->
 
                 <!-- 当たり判定オブジェクト -->
                 <a-entity hit-box>
                     <a-entity hitbox class="raycastable" geometry="primitive:cylinder" material="color:blue; opacity: 0.0" scale="0.05 0.1 0.05" position="0 0.05 0" visible="false"></a-entity>
                 </a-entity>
+
+                <a-sound id="alerm" src="src: url(pixta_64136226_01.mp3)" autoplay="true" loop="true" volume="00.0" position="0 2 5"></a-sound>
                 
             </a-entity>
 
@@ -141,10 +162,49 @@
         
     </a-scene>
     <script>
+        //audio
+
+        // var bell = new Audio();
+        // bell.src = 'bell.mp3'; // 音声ファイルの指定
+        // bell.load(); // audioの読み込み
+        
+        // var Result_01 = new Audio();
+        // Result_01.src = 'Result_01.mp3'; // 音声ファイルの指定
+        // Result_01.load(); // audioの読み込み
+
+        // var pixta_64136226_01 = new Audio();
+        // pixta_64136226_01.src = 'pixta_64136226_01.mp3'; // 音声ファイルの指定
+        // pixta_64136226_01.load(); // audioの読み込み
+
+        // var Jingle_07 = new Audio();
+        // Jingle_07.src = 'Jingle_07.mp3'; // 音声ファイルの指定
+        // Jingle_07.load(); // audioの読み込み
+
+        // var FinalBattleActionV2 = new Audio();
+        // FinalBattleActionV2.src = 'FinalBattleActionV2.mp3'; // 音声ファイルの指定
+        // FinalBattleActionV2.load(); // audioの読み込み
+
+        var bell_audio = document.querySelector('#bell');
+        bell_audio.load();
+        var hit_audio = document.querySelector('#hit');
+        hit_audio.load();
+        var result_audio = document.querySelector('#result');
+        result_audio.load();
+        var dropin_audio = document.querySelector('#dropin');
+        dropin_audio.load();
+        var nadeVoice_audio = document.querySelector('#nadeVoice');
+        nadeVoice_audio.load();
+        var jumpVoice_audio = document.querySelector('#jumpVoice');
+        jumpVoice_audio.load()
+
+        
+
+
+
         //Countdown
         var timerElement = document.getElementById('timer');
         var count = 0; //カウントの初期値
-        timerID = setInterval('countup()',100); //1秒毎にcountup()を呼び出し
+        // timerID = setInterval('countup()',100); //1秒毎にcountup()を呼び出し
 
         function countup() {
             count = count + 1;
@@ -157,11 +217,12 @@
             const _calcMin = calcMin < 10 ? '0' + calcMin : calcMin;
 
             timerElement.setAttribute('value', _calcMin + ":" + _calcSec);
-            // if(count < 1) clearInterval(timerID)
         }
 
 
         const model = document.getElementById('model');
+        var alerm_audio = document.querySelector('#alerm');
+        
         function onAnimationRot() {
             let x = model.object3D.rotation.x;
             let y = model.object3D.rotation.y;
@@ -231,7 +292,6 @@
 
         function onAnimationIdle2() {
             console.log("idle2");
-            alerm_audio.pause();
 
             model.setAttribute('animation-mixer', {
                 clip: 'idle',
@@ -239,10 +299,13 @@
                 crossFadeDuration: 0.0,
             })
 
+            alerm_audio.setAttribute('volume', 0.0)
         }
 
         function onAnimationNade() {
             console.log("talk");
+            nadeVoice_audio.currentTime = 0;
+            nadeVoice_audio.play();
 
             model.setAttribute('animation-mixer', {
                 clip: 'nade',
@@ -252,8 +315,6 @@
 
         }
 
-        var alerm_audio = document.querySelector('#alerm');
-
         function onAnimationJump() {
             console.log("jump");
             model.setAttribute('animation-mixer', {
@@ -262,25 +323,34 @@
                 crossFadeDuration: 0.0,
             })
 
-            var bell_audio = document.querySelector('#bell');
+            jumpVoice_audio.currentTime = 0;
+            jumpVoice_audio.play();
+
             bell_audio.currentTime = 0;
             bell_audio.play();
 
-            alerm_audio.pause();
+            alerm_audio.setAttribute('volume', 0.0)
         }
 
         
         function onAnimationRun() {
             console.log("Run");
-
             model.setAttribute('animation-mixer', {
                 clip: 'run',
                 loop: 'repeat',
                 crossFadeDuration: 0.0,
             })
+            alerm_audio.setAttribute('volume', 50.0)
+        }
 
-            alerm_audio.play();
-
+        function onAnimationRun2() {
+            console.log("Run");
+            model.setAttribute('animation-mixer', {
+                clip: 'run',
+                loop: 'repeat',
+                crossFadeDuration: 0.0,
+            })
+            alerm_audio.setAttribute('volume', 50.0)
         }
 
         var rotationSpeed = 10.0;
@@ -314,7 +384,6 @@
 
         // スタート関数
         function setStart() {
-            var dropin_audio = document.querySelector('#dropin');
             dropin_audio.currentTime = 0;
             dropin_audio.play();
             onAnimationDropin();
@@ -330,6 +399,7 @@
         let state;
         let num;
         let limit;
+        let speed;
 
         AFRAME.registerComponent('updater', {
             init: function()
@@ -338,34 +408,53 @@
                 num = 0;
                 limit = 3;
 
+                document.getElementById('setup_btn').style.visibility = 'visible'
+                document.getElementById('start_btn').style.visibility = 'hidden';
+                document.getElementById('again_btn').style.visibility = 'hidden';
                 
-
                 //Strat button
-                const start_btn = document.getElementById('start_btn')
+                const setup_btn = document.getElementById('setup_btn')
                 const startClick = () => {
                     console.log('start')
                     state = 2;
 
                     setStart();
-                    document.getElementById('start_btn').style.visibility = 'hidden'
-                    document.getElementById('btn').style.visibility = 'visible'
+                    document.getElementById('setup_btn').style.visibility = 'hidden';
+                    document.getElementById('start_btn').style.visibility = 'visible';
                     }
-                start_btn.addEventListener('click', startClick, {once: true});
+                setup_btn.addEventListener('click', startClick, {once: true});
 
+                //again button
+                const again_btn = document.getElementById('again_btn')
+                const againClick = () => {
+                    console.log('again')
+                    num = 0;
+                    count = 0;
+                    state = 3;
+
+                    timerID = setInterval('countup()',100); //1秒毎にcountup()を呼び出し
+                    
+                    document.getElementById('again_btn').style.visibility = 'hidden'
+                    onAnimationJump();
+                    model.addEventListener('animation-loop', onAnimationRun2)
+                    
+                    }
+                    again_btn.addEventListener('click', againClick);
 
                 //jump button
-                const btn = document.getElementById('btn')
+                const start_btn = document.getElementById('start_btn')
                 const jumpClick = () => {
                     console.log('click')
                     state = 3;
 
+                    timerID = setInterval('countup()',100); //1秒毎にcountup()を呼び出し
                     
-                    document.getElementById('btn').style.visibility = 'hidden'
+                    document.getElementById('start_btn').style.visibility = 'hidden'
                     onAnimationJump();
                     model.addEventListener('animation-loop', onAnimationRun)
                     
                     }
-                btn.addEventListener('click', jumpClick);
+                start_btn.addEventListener('click', jumpClick);
 
             },
             tick: function (time, timeDelta) 
@@ -392,7 +481,7 @@
                     //get model vector
                     var vector = new THREE.Vector3();
                     model.object3D.getWorldDirection(vector);
-                    vector.multiplyScalar(0.03);
+                    vector.multiplyScalar(0.03 + 0.02 * num);
                     model.object3D.position.add(vector);
                 }
             }
@@ -406,7 +495,7 @@
                 this.el.addEventListener('click', ()=>{
 
                     //game wait
-                    if(state == 2){
+                    if(state == 2 || state == 4){
                         // var audio = document.querySelector('#hit');
                         // audio.currentTime = 0;
                         // audio.play();
@@ -435,9 +524,9 @@
                         particleEmitter.components['particle-system'].stopParticles();
                         particleEmitter.components['particle-system'].startParticles();
 
-                        var audio = document.querySelector('#hit');
-                        audio.currentTime = 0;
-                        audio.play();
+                        
+                        hit_audio.currentTime = 0;
+                        hit_audio.play();
 
                         
 
@@ -452,7 +541,6 @@
                             
                             clearInterval(timerID);
 
-                            var result_audio = document.querySelector('#result');
                             result_audio.currentTime = 0;
                             result_audio.play();
                             
@@ -464,6 +552,7 @@
                             onAnimationResetPos();
                             onAnimationResetRot();
 
+                            document.getElementById('again_btn').style.visibility = 'visible'
                         }
                         else{
                             onAnimationJump();
