@@ -9,7 +9,7 @@
     
     <!-- https://github.com/AR-js-org/AR.js/ -->
     <!-- <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script> -->
-    <script src="https://raw.githack.com/AR-js-org/AR.js/3.4.5/aframe/build/aframe-ar-nft.js"></script>
+    <script src="https://raw.githack.com/AR-js-org/AR.js/3.4.5/aframe/build/aframe-ar-nft.js"></script> 
 
 </head>
 
@@ -277,7 +277,7 @@
                 loop: 'repeat',
                 crossFadeDuration: 0.0,
             })
-
+            alerm_audio.setAttribute('volume', 0.0)
         }
 
         function onAnimationIdle() {
@@ -288,17 +288,6 @@
                 loop: 'repeat',
                 crossFadeDuration: 0.0,
             })
-        }
-
-        function onAnimationIdle2() {
-            console.log("idle2");
-
-            model.setAttribute('animation-mixer', {
-                clip: 'idle',
-                loop: 'repeat',
-                crossFadeDuration: 0.0,
-            })
-
             alerm_audio.setAttribute('volume', 0.0)
         }
 
@@ -312,7 +301,7 @@
                 loop: 'repeat',
                 crossFadeDuration: 0.0,
             })
-
+            alerm_audio.setAttribute('volume', 0.0)
         }
 
         function onAnimationJump() {
@@ -334,16 +323,6 @@
 
         
         function onAnimationRun() {
-            console.log("Run");
-            model.setAttribute('animation-mixer', {
-                clip: 'run',
-                loop: 'repeat',
-                crossFadeDuration: 0.0,
-            })
-            alerm_audio.setAttribute('volume', 50.0)
-        }
-
-        function onAnimationRun2() {
             console.log("Run");
             model.setAttribute('animation-mixer', {
                 clip: 'run',
@@ -436,10 +415,11 @@
                     
                     document.getElementById('again_btn').style.visibility = 'hidden'
                     onAnimationJump();
-                    model.addEventListener('animation-loop', onAnimationRun2)
+                    model.removeEventListener('animation-loop', onAnimationRun);
+                    model.addEventListener('animation-loop', onAnimationRun)
                     
                     }
-                    again_btn.addEventListener('click', againClick);
+                again_btn.addEventListener('click', againClick);
 
                 //jump button
                 const start_btn = document.getElementById('start_btn')
@@ -496,21 +476,8 @@
 
                     //game wait
                     if(state == 2 || state == 4){
-                        // var audio = document.querySelector('#hit');
-                        // audio.currentTime = 0;
-                        // audio.play();
-
-                        model.removeAttribute('animation-mixer', onAnimationIdle);
-                        model.removeAttribute('animation-mixer', onAnimationNade);
                         onAnimationNade();
                         model.addEventListener('animation-finished', onAnimationIdle)
-
-                        // var pos = new THREE.Vector3();
-                        // model.object3D.getWorldPosition(pos);
-
-                        // particleEmitter.setAttribute('position', pos); 
-                        // particleEmitter.components['particle-system'].stopParticles();
-                        // particleEmitter.components['particle-system'].startParticles();
                     }
 
                     //game play
@@ -524,11 +491,9 @@
                         particleEmitter.components['particle-system'].stopParticles();
                         particleEmitter.components['particle-system'].startParticles();
 
-                        
                         hit_audio.currentTime = 0;
                         hit_audio.play();
 
-                        
 
                         model.removeAttribute('animation', onAnimationRot);
                         onAnimationRot();
@@ -544,9 +509,9 @@
                             result_audio.currentTime = 0;
                             result_audio.play();
                             
-                            
                             onAnimationJump();
-                            model.addEventListener('animation-loop', onAnimationIdle2);
+                            model.removeEventListener('animation-loop', onAnimationIdle);
+                            model.addEventListener('animation-loop', onAnimationIdle);
 
                             model.removeAttribute('animation', onAnimationRot);
                             onAnimationResetPos();
