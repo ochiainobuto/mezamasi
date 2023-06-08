@@ -9,7 +9,7 @@
     
     <!-- https://github.com/AR-js-org/AR.js/ -->
     <!-- <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script> -->
-    <script src="https://raw.githack.com/AR-js-org/AR.js/3.4.5/aframe/build/aframe-ar-nft.js"></script> 
+    <!-- <script src="https://raw.githack.com/AR-js-org/AR.js/3.4.5/aframe/build/aframe-ar-nft.js"></script>  -->
 
 </head>
 
@@ -431,9 +431,8 @@
         // ゴールをランダムな位置に設定する関数
         function setRandomGoal() {
             goal.x = Math.random() * 8 - 4;
-            goal.y = 0;
+            goal.y = Math.random() * 2 - 1;
             goal.z = Math.random() * 4 - 3;
-
         }
 
 
@@ -522,20 +521,44 @@
                 //console.log( this.num );
 
                 if(state == 3){
+                    // direction.subVectors(model.object3D.position, goal).normalize();
+
+                    // // オブジェクトをゴールの方向に向ける
+                    // var targetRotation = Math.atan2(-direction.x, -direction.z);
+                    // var deltaRotation = targetRotation - currentRotation.y;
+
+                    // // 回転を制限するために、deltaRotationを -π から π の範囲に制限する
+                    // deltaRotation = ((deltaRotation + Math.PI) % (2 * Math.PI)) - Math.PI;
+
+                    // // 回転を徐々に適用する
+                    // currentRotation.y += deltaRotation * rotationSpeed / 400;
+
+                    // // 回転を反映する
+                    // model.object3D.rotation.set(currentRotation.x, currentRotation.y, currentRotation.z);
+
+                    // direction.subVectors(model.object3D.position, goal).normalize();
+
                     direction.subVectors(model.object3D.position, goal).normalize();
 
                     // オブジェクトをゴールの方向に向ける
-                    var targetRotation = Math.atan2(-direction.x, -direction.z);
-                    var deltaRotation = targetRotation - currentRotation.y;
+                    var targetRotationY = Math.atan2(-direction.x, -direction.z);
+                    var deltaRotationY = targetRotationY - currentRotation.y;
 
                     // 回転を制限するために、deltaRotationを -π から π の範囲に制限する
-                    deltaRotation = ((deltaRotation + Math.PI) % (2 * Math.PI)) - Math.PI;
+                    deltaRotationY = ((deltaRotationY + Math.PI) % (2 * Math.PI)) - Math.PI;
 
                     // 回転を徐々に適用する
-                    currentRotation.y += deltaRotation * rotationSpeed / 400;
+                    currentRotation.y += deltaRotationY * rotationSpeed / 400;
+
+                    // サイン波でX軸周りの回転を適用する
+                    var time = performance.now() * 0.002; // 時間を秒単位に変換する
+                    var sinRotationX = Math.sin(time); // サイン波を計算する
+                    currentRotation.x = sinRotationX;
 
                     // 回転を反映する
                     model.object3D.rotation.set(currentRotation.x, currentRotation.y, currentRotation.z);
+
+
 
                     //get model vector
                     var vector = new THREE.Vector3();
