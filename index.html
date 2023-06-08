@@ -536,7 +536,6 @@
                     // // 回転を反映する
                     // model.object3D.rotation.set(currentRotation.x, currentRotation.y, currentRotation.z);
 
-                    // direction.subVectors(model.object3D.position, goal).normalize();
 
                     direction.subVectors(model.object3D.position, goal).normalize();
 
@@ -553,7 +552,7 @@
                     // サイン波でX軸周りの回転を適用する
                     var time = performance.now() * 0.002; // 時間を秒単位に変換する
                     var sinRotationX = Math.sin(time); // サイン波を計算する
-                    currentRotation.x = sinRotationX;
+                    currentRotation.x = sinRotationX * 0.5;
 
                     // 回転を反映する
                     model.object3D.rotation.set(currentRotation.x, currentRotation.y, currentRotation.z);
