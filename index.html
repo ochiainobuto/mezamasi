@@ -9,7 +9,7 @@
     
     <!-- https://github.com/AR-js-org/AR.js/ -->
     <!-- <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script> -->
-    <script src="https://raw.githack.com/AR-js-org/AR.js/3.4.5/aframe/build/aframe-ar-nft.js"></script> 
+    <!-- <script src="https://raw.githack.com/AR-js-org/AR.js/3.4.5/aframe/build/aframe-ar-nft.js"></script>  -->
 
 </head>
 
@@ -84,31 +84,39 @@
 
         <!-- Partivcles -->
         <a-entity id="particleEmitter" 
-        rotation="0 90 0" 
-        position="0 0.5 -3" 
-        particle-system="preset:star; 
-                        color: yellow; 
-                        maxAge: 0.5;
-                        accelerationValue: 0 -1 0; 
-                        accelerationSpread: 0 0 0; 
-                        velocityValue: 0 1 0; 
-                        velocitySpread: 3 3 3; 
-                        randomise: true;
-                        dragValue: 0.2; 
-                        duration: 0.03; 
-                        enabled: false;
-                        size: 1.0;
-                        particleCount: 8;">
+            rotation="0 90 0" 
+            position="0 0.5 -3" 
+            particle-system="preset:star; 
+                            color: yellow; 
+                            maxAge: 0.5;
+                            accelerationValue: 0 -1 0; 
+                            accelerationSpread: 0 0 0; 
+                            velocityValue: 0 1 0; 
+                            velocitySpread: 3 3 3; 
+                            randomise: true;
+                            dragValue: 0.2; 
+                            duration: 0.03; 
+                            enabled: false;
+                            size: 1.0;
+                            particleCount: 8;">
         </a-entity>
         <a-entity id="particleSmoke" 
-        rotation="0 90 0" 
-        position="0 0.5 0" 
-
-
-        <!-- <a-entity
-            id="shadow-plane-entity"
-            shadow-plane="opacity: 0.4">
-        </a-entity> -->
+            rotation="0 90 0" 
+            position="0 0.5 0" 
+            particle-system="preset:star; 
+                            color: white; 
+                            maxAge: 0.5;
+                            accelerationValue: 0 -1 0; 
+                            accelerationSpread: 0 0 0; 
+                            velocityValue: 0 1 0; 
+                            velocitySpread: 3 3 3; 
+                            randomise: true;
+                            dragValue: 0.2; 
+                            duration: 0.03; 
+                            enabled: false;
+                            size: 1.0;
+                            particleCount: 8;">
+        </a-entity>
 
         <a-assets>
             <a-asset-item id="mezamasikun" src="mezamasi_anim3.glb"></a-asset-item>
@@ -144,25 +152,98 @@
                 <a-sound id="alerm" src="src: url(pixta_64136226_01.mp3)" autoplay="true" loop="true" volume="00.0" position="0 2 5"></a-sound>
                 
             </a-entity>
+            <!-- コイン -->
+            <!-- <a-entity id="coinA" position="0.5 1 0">
+                <a-entity hit-boxa
+                animation__position="property: position; to: 0 -0.6 0; dir: alternate; dur: 700; loop: true"
+                animation__rotation="property: rotation; to: 0 360 0; dur: 2000; loop: true">
+                <a-entity hit-box>
+                    <a-entity hitbox class="raycastable" geometry="primitive:cylinder" material="color:red; opacity: 0.5" scale="0.4 0.4 0.4" rotation="90 0 0" position="0 0 0" visible="true"></a-entity>
+                </a-entity>
+                <a-circle color="yellow"
+                        position="0 0 -0.01"
+                        scale="0.15 0.15 0.15"
+                        rotation="0 180 0">
+                </a-circle>
+                <a-circle color="yellow"
+                        position="0 0 0.01"
+                        scale="0.15 0.15 0.15"
+                        rotation="0 0 0">
+                </a-circle>
+                <a-cylinder color="yellow" 
+                    material="side: double" 
+                    open-ended="true" 
+                    scale="0.15 0.02 0.15"
+                    rotation="90 0 0">
+                </a-cylinder>
+            </a-entity>
+            </a-entity>
+            
 
-            <a-text id="timer"
-                align="center"
-                value="00:00" 
-                scale="2 2 2" 
-                color="rgba(0, 0, 255)"
-                width="10"
-                position="0 2 -2">
-            </a-text>
+            <a-entity id="coinB" position="-0.5 1 0">
+                <a-entity hit-boxb
+                    animation__position="property: position; to: 0 -0.6 0; dir: alternate; dur: 700; loop: true"
+                    animation__rotation="property: rotation; to: 0 -360 0; dur: 1800; loop: true">
+                    <a-entity hitbox class="raycastable" geometry="primitive:cylinder" material="color:blue; opacity: 0.5" scale="0.4 0.4 0.4" rotation="90 0 0" position="0 0 0" visible="true"></a-entity>
+                    <a-circle color="yellow"
+                            position="0 0 -0.01"
+                            scale="0.2 0.2 0.2"
+                            rotation="0 180 0">
+                    </a-circle>
+                    <a-circle color="yellow"
+                            position="0 0 0.01"
+                            scale="0.2 0.2 0.2"
+                            rotation="0 0 0">
+                    </a-circle>
+                    <a-cylinder color="yellow" 
+                        material="side: double" 
+                        open-ended="true" 
+                        scale="0.2 0.03 0.2"
+                        rotation="90 0 0">
+                    </a-cylinder>
+                </a-entity>
+            </a-entity>
+
+            <a-entity id="coinC" position="0 1 0">
+                <a-entity hit-boxc 
+                    animation__position="property: position; to: 0 -0.6 0; dir: alternate; dur: 700; loop: true"
+                    animation__rotation="property: rotation; to: 0 360 0; dur: 1700; loop: true">
+                    <a-entity hitbox class="raycastable" geometry="primitive:cylinder" material="color:green; opacity: 0.5" scale="0.4 0.4 0.4" rotation="90 0 0" position="0 0 0" visible="true"></a-entity>
+                    <a-circle color="yellow"
+                            position="0 0 -0.01"
+                            scale="0.15 0.15 0.15"
+                            rotation="0 180 0">
+                    </a-circle>
+                    <a-circle color="yellow"
+                            position="0 0 0.01"
+                            scale="0.15 0.15 0.15"
+                            rotation="0 0 0">
+                    </a-circle>
+                    <a-cylinder color="yellow" 
+                        material="side: double" 
+                        open-ended="true" 
+                        scale="0.15 0.02 0.15"
+                        rotation="90 0 0">
+                    </a-cylinder>
+                </a-entity>
+            </a-entity> -->
+
+            
 
         <!-- Camera -->
-        <!-- <a-entity id='cameraWrapper' position="0 -1 2">
-            <a-camera> look-controls="false"</a-camera>
-        </a-entity> -->
-
         <a-scene>
-            <a-entity camera look-controls disable-mouse-look position="0 0.5 3"></a-entity>
+            <a-entity camera look-controls disable-mouse-look position="0 0.5 3">
+                <a-text id="timer"
+                    align="center"
+                    value="00:00" 
+                    scale="1 0.5 1" 
+                    color="rgba(0, 0, 255)"
+                    width="10"
+                    position="0 1 -2">
+                </a-text>
+                
+            </a-entity>
         </a-scene>
-
 
         <!-- マウスカーソル -->
         <a-entity id="mouseCursor" cursor="rayOrigin: mouse" raycaster="objects: .raycastable"></a-entity>
@@ -172,6 +253,7 @@
     </a-scene>
     
     <script>
+        //マウスドラッグではCamera動かさないけど、ジャイロでは動かす拡張
         AFRAME.registerComponent('disable-mouse-look', {
             dependencies: ['look-controls'],
             init: function () {
@@ -219,6 +301,12 @@
             timerElement.setAttribute('value', _calcMin + ":" + _calcSec);
         }
 
+        // var coinAEntity = document.querySelector('#coinA');
+        // var coinBEntity = document.querySelector('#coinB');
+        // var coinCEntity = document.querySelector('#coinC');
+        // coinAEntity.setAttribute('visible', false);
+        // coinBEntity.setAttribute('visible', false);
+        // coinCEntity.setAttribute('visible', false);
 
         const model = document.getElementById('model');
         var alerm_audio = document.querySelector('#alerm');
@@ -342,9 +430,9 @@
         
         // ゴールをランダムな位置に設定する関数
         function setRandomGoal() {
-            goal.x = Math.random() * 10 - 5;
+            goal.x = Math.random() * 8 - 4;
             goal.y = 0;
-            goal.z = Math.random() * 6 - 4;
+            goal.z = Math.random() * 4 - 3;
 
         }
 
@@ -372,7 +460,7 @@
                 setRandomGoal();
 
                 // 2秒ごとにゴールをランダムな位置に設定する
-                setInterval(setRandomGoal, 600);
+                setInterval(setRandomGoal, 500);
 
                 state = 0;
                 num = 0;
@@ -491,8 +579,19 @@
 
                         model.removeAttribute('animation', onAnimationRot);
                         onAnimationRot();
-
                         
+                        // coinAEntity.setAttribute('visible', true);
+                        // coinBEntity.setAttribute('visible', true);
+                        // coinCEntity.setAttribute('visible', true);
+
+
+                        // pos.add(new THREE.Vector3(0, 1, 0));
+                        // coinAEntity.setAttribute('position', pos); 
+                        // pos.add(new THREE.Vector3(1, 0, 0));
+                        // coinBEntity.setAttribute('position', pos); 
+                        // pos.add(new THREE.Vector3(0, 0, 1));
+                        // coinCEntity.setAttribute('position', pos); 
+
                         num = num + 1;
                         if(num == limit){
                             console.log("Stoppppppp");
@@ -528,7 +627,27 @@
                 });
             }
         });
-
+        // AFRAME.registerComponent('hit-boxa', {
+        //     init:function(){
+        //         this.el.addEventListener('click', ()=>{
+        //             coinAEntity.setAttribute('visible', false);
+        //         });
+        //     }
+        // });
+        // AFRAME.registerComponent('hit-boxb', {
+        //     init:function(){
+        //         this.el.addEventListener('click', ()=>{
+        //             coinBEntity.setAttribute('visible', false);
+        //         });
+        //     }
+        // });
+        // AFRAME.registerComponent('hit-boxc', {
+        //     init:function(){
+        //         this.el.addEventListener('click', ()=>{
+        //             coinCEntity.setAttribute('visible', false);
+        //         });
+        //     }
+        // });
 
     </script>
 </body>
