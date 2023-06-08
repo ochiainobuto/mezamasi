@@ -9,7 +9,7 @@
     
     <!-- https://github.com/AR-js-org/AR.js/ -->
     <!-- <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script> -->
-    <script src="https://raw.githack.com/AR-js-org/AR.js/3.4.5/aframe/build/aframe-ar-nft.js"></script> 
+    <!-- <script src="https://raw.githack.com/AR-js-org/AR.js/3.4.5/aframe/build/aframe-ar-nft.js"></script>  -->
 
 </head>
 
@@ -76,10 +76,10 @@
                     precision: medium;
                     sortObjects: true;
                     toneMapping: ACESFilmic;
-                    exposure: 1.6;
+                    exposure: 1.0;
                     physicallyCorrectLights: false;">
 
-        <a-light id="dirlight" intensity="1.8" position="1 2 1"></a-light>
+        <a-light id="dirlight" intensity="1.0" position="1 2 1"></a-light>
         <a-entity light="type: ambient; color: #ffffff; intensity: 0.0" position="0 0 0"></a-entity>
 
         <!-- Partivcles -->
@@ -100,6 +100,10 @@
                         size: 1.0;
                         particleCount: 8;">
         </a-entity>
+        <a-entity id="particleSmoke" 
+        rotation="0 90 0" 
+        position="0 0.5 0" 
+
 
         <!-- <a-entity
             id="shadow-plane-entity"
@@ -122,7 +126,7 @@
                 id="model"
                 visible="false"
                 gltf-model="#mezamasikun" 
-                position="0 0 -1" 
+                position="0 0 0" 
                 scale="10.0 10.0 10.0" 
                 rotation="0 0 0"
                 animation-mixer="clip: idle; loop: repeat timeScale: 1.0"
@@ -147,13 +151,17 @@
                 scale="2 2 2" 
                 color="rgba(0, 0, 255)"
                 width="10"
-                position="0 2 -3">
+                position="0 2 -1">
             </a-text>
 
         <!-- Camera -->
-        <a-entity id='cameraWrapper' position="0 -1 1">
-            <a-camera></a-camera>
-        </a-entity>
+        <!-- <a-entity id='cameraWrapper' position="0 -1 2">
+            <a-camera> look-controls="false"</a-camera>
+        </a-entity> -->
+
+        <a-scene>
+            <a-entity camera look-controls="enabled: false" position="0 0.5 2"></a-entity>
+        </a-scene>
 
         <!-- マウスカーソル -->
         <a-entity id="mouseCursor" cursor="rayOrigin: mouse" raycaster="objects: .raycastable"></a-entity>
@@ -161,29 +169,9 @@
         <a-entity updater></a-entity>
         
     </a-scene>
+    
     <script>
         //audio
-
-        // var bell = new Audio();
-        // bell.src = 'bell.mp3'; // 音声ファイルの指定
-        // bell.load(); // audioの読み込み
-        
-        // var Result_01 = new Audio();
-        // Result_01.src = 'Result_01.mp3'; // 音声ファイルの指定
-        // Result_01.load(); // audioの読み込み
-
-        // var pixta_64136226_01 = new Audio();
-        // pixta_64136226_01.src = 'pixta_64136226_01.mp3'; // 音声ファイルの指定
-        // pixta_64136226_01.load(); // audioの読み込み
-
-        // var Jingle_07 = new Audio();
-        // Jingle_07.src = 'Jingle_07.mp3'; // 音声ファイルの指定
-        // Jingle_07.load(); // audioの読み込み
-
-        // var FinalBattleActionV2 = new Audio();
-        // FinalBattleActionV2.src = 'FinalBattleActionV2.mp3'; // 音声ファイルの指定
-        // FinalBattleActionV2.load(); // audioの読み込み
-
         var bell_audio = document.querySelector('#bell');
         bell_audio.load();
         var hit_audio = document.querySelector('#hit');
@@ -198,8 +186,6 @@
         jumpVoice_audio.load()
 
         
-
-
 
         //Countdown
         var timerElement = document.getElementById('timer');
@@ -348,18 +334,6 @@
 
         }
 
-        // ゴールを最初に設定する
-        setRandomGoal();
-
-        // 2秒ごとにゴールをランダムな位置に設定する
-        setInterval(setRandomGoal, 1000);
-        
-
-        //Update
-        function updateScreen(time) {
-            // console.log("update");
-
-        }
 
         // スタート関数
         function setStart() {
@@ -370,19 +344,22 @@
         }
 
 
-        // var alerm_audio = document.querySelector('#alerm');
-
-        // var entity = document.querySelector('#alerm');
-        // entity.components.sound.playSound();
-
         let state;
         let num;
         let limit;
         let speed;
+        var particleSmoke = document.getElementById('particleSmoke');
 
+        /////// Update Method /////////
         AFRAME.registerComponent('updater', {
             init: function()
             {
+                // ゴールを最初に設定する
+                setRandomGoal();
+
+                // 2秒ごとにゴールをランダムな位置に設定する
+                setInterval(setRandomGoal, 1000);
+
                 state = 0;
                 num = 0;
                 limit = 3;
@@ -463,12 +440,15 @@
                     model.object3D.getWorldDirection(vector);
                     vector.multiplyScalar(0.03 + 0.02 * num);
                     model.object3D.position.add(vector);
+
                 }
+
             }
         });
 
-        //Hit
+        /////// Hit Method /////////
         var particleEmitter = document.getElementById('particleEmitter');
+        
 
         AFRAME.registerComponent('hit-box', {
             init:function(){
@@ -535,13 +515,6 @@
             }
         });
 
-        // ブラウザのレンダリングのタイミングにあわせて表示を更新
-        (function loop() {
-            updateScreen();
-
-            // update();
-            window.requestAnimationFrame(loop);
-        }());
 
     </script>
 </body>
