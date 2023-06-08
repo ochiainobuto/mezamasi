@@ -160,8 +160,9 @@
         </a-entity> -->
 
         <a-scene>
-            <a-entity camera look-controls="enabled: false" position="0 0.5 2"></a-entity>
+            <a-entity camera look-controls disable-mouse-look position="0 0.5 2"></a-entity>
         </a-scene>
+
 
         <!-- マウスカーソル -->
         <a-entity id="mouseCursor" cursor="rayOrigin: mouse" raycaster="objects: .raycastable"></a-entity>
@@ -171,6 +172,19 @@
     </a-scene>
     
     <script>
+        AFRAME.registerComponent('disable-mouse-look', {
+            dependencies: ['look-controls'],
+            init: function () {
+                this.el.components['look-controls'].mouseDown = false; // disable mouse drag
+                this.el.addEventListener('touchstart', () => {
+                this.el.components['look-controls'].touchStart(); // re-enable touch drag
+                });
+                this.el.addEventListener('touchmove', () => {
+                this.el.components['look-controls'].touchMove(); // re-enable touch drag
+                });
+            }
+        });
+
         //audio
         var bell_audio = document.querySelector('#bell');
         bell_audio.load();
